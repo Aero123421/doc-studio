@@ -1,0 +1,215 @@
+# Doc Studio Skill for Codex CLI
+# Place in ~/.codex/skills/doc-studio/skill.yaml
+
+name: doc-studio
+version: 1.0.0
+description: |
+  Enterprise document generation skill for creating professional PDFs,
+  PowerPoints, Word documents, and Excel files with customizable templates.
+
+author: Doc Studio Team
+tags: [document, pdf, pptx, docx, excel, generation]
+
+commands:
+  generate:
+    description: Generate a document from template
+    args:
+      - name: format
+        type: choice
+        options: [pdf, pptx, docx, xlsx, html]
+        required: true
+        description: Output document format
+
+      - name: template
+        type: choice
+        options:
+          [
+            whitepaper,
+            catalog,
+            portfolio,
+            infographic,
+            flyer,
+            reportlab_advanced,
+            weasyprint_premium,
+            matplotlib_datareport,
+            fpdf2_modern,
+            proposal_template,
+            business_modern,
+            creative_gradient,
+            technical_dark,
+            minimalist,
+            corporate_formal,
+            advanced_business,
+            proposal,
+            manual,
+            resume,
+            excel_dashboard,
+            revealjs_presentation,
+          ]
+        required: true
+        description: Template style
+
+      - name: output
+        type: string
+        required: true
+        description: Output filename (without extension)
+
+      - name: data
+        type: json
+        required: false
+        description: JSON data to inject into template
+
+      - name: engine
+        type: choice
+        options: [auto, playwright, reportlab, weasyprint, fpdf2, python-pptx, python-docx, xlsxwriter]
+        required: false
+        description: Generation engine (auto-selected by default)
+
+    examples:
+      - "doc-studio generate pdf whitepaper quarterly_report"
+      - "doc-studio generate pptx business_modern strategy_slides"
+      - "doc-studio generate docx proposal project_proposal"
+
+    handler: scripts/generate.py
+
+  template:
+    description: Manage document templates
+    args:
+      - name: action
+        type: choice
+        options: [list, info, create, edit]
+        required: true
+        description: Action to perform
+
+      - name: name
+        type: string
+        required: false
+        description: Template name
+
+      - name: format
+        type: choice
+        options: [pdf, pptx, docx, xlsx, html]
+        required: false
+        description: Filter by format
+
+    examples:
+      - "doc-studio template list"
+      - "doc-studio template info business"
+
+    handler: scripts/template.py
+
+  preflight:
+    description: Run preflight checks on documents
+    args:
+      - name: file
+        type: path
+        required: true
+        description: Path to document
+
+      - name: checks
+        type: list
+        options: [fonts, images, links, colors, accessibility, all]
+        required: false
+        description: Checks to run
+
+    examples:
+      - "doc-studio preflight output/report.pdf"
+
+    handler: scripts/preflight.py
+
+  config:
+    description: Manage configuration
+    args:
+      - name: action
+        type: choice
+        options: [get, set, reset, show]
+        required: true
+
+      - name: key
+        type: string
+        required: false
+
+      - name: value
+        type: string
+        required: false
+
+    handler: scripts/config.py
+
+configuration:
+  schema: schema/config-schema.json
+  defaults:
+    output:
+      basePath: ./output
+      subdirs:
+        pdf: pdf
+        pptx: pptx
+        docx: word
+        xlsx: excel
+        html: html
+
+    templates:
+      path: ./templates
+      builtin:
+        [
+          whitepaper,
+          catalog,
+          portfolio,
+          infographic,
+          flyer,
+          reportlab_advanced,
+          weasyprint_premium,
+          matplotlib_datareport,
+          fpdf2_modern,
+          proposal_template,
+          business_modern,
+          creative_gradient,
+          technical_dark,
+          minimalist,
+          corporate_formal,
+          advanced_business,
+          proposal,
+          manual,
+          resume,
+          excel_dashboard,
+          revealjs_presentation,
+        ]
+
+    defaults:
+      language: ja
+      colorScheme: business
+      font:
+        primary: "Noto Sans JP"
+        secondary: Inter
+        monospace: Consolas
+      pageSize: A4
+
+    engines:
+      pdf: playwright
+      pptx: python-pptx
+      docx: python-docx
+      xlsx: xlsxwriter
+
+    preflight:
+      enabled: true
+      checks: [fonts, images, colors]
+
+engines:
+  pdf:
+    - playwright: Modern CSS-based PDF generation
+    - reportlab: Programmatic PDF with charts
+    - weasyprint: Print-quality typography
+    - fpdf2: Lightweight fast generation
+    - matplotlib: Data visualization reports
+
+  pptx:
+    - python-pptx: Full PowerPoint control
+
+  docx:
+    - python-docx: Standard Word documents
+    - docxtpl: Jinja2 templating
+
+  xlsx:
+    - xlsxwriter: Advanced Excel with charts
+
+  html:
+    - revealjs: Interactive presentations

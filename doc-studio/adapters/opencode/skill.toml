@@ -1,0 +1,80 @@
+[skill]
+name = "doc-studio"
+version = "1.0.0"
+description = "Enterprise document generation for PDF, PPTX, DOCX, and Excel"
+author = "Doc Studio Team"
+tags = ["documents", "pdf", "pptx", "docx", "xlsx", "templates"]
+icon = "📄"
+
+[commands]
+[commands.generate]
+description = "Generate a document"
+script = "commands/generate.py"
+args = [
+  { name = "format", type = "choice", options = ["pdf", "pptx", "docx", "xlsx", "html"], required = true },
+  { name = "template", type = "choice", options = ["whitepaper", "catalog", "portfolio", "infographic", "flyer", "reportlab_advanced", "weasyprint_premium", "matplotlib_datareport", "fpdf2_modern", "proposal_template", "business_modern", "creative_gradient", "technical_dark", "minimalist", "corporate_formal", "advanced_business", "proposal", "manual", "resume", "excel_dashboard", "revealjs_presentation"], required = true },
+  { name = "output", type = "string", required = true },
+  { name = "data", type = "json", required = false },
+  { name = "engine", type = "choice", options = ["auto", "playwright", "reportlab", "weasyprint", "fpdf2", "python-pptx", "python-docx", "xlsxwriter"], required = false }
+]
+
+[commands.template]
+description = "Manage templates"
+script = "commands/template.py"
+args = [
+  { name = "action", type = "choice", options = ["list", "info", "create", "edit"], required = true },
+  { name = "name", type = "string", required = false },
+  { name = "format", type = "choice", options = ["pdf", "pptx", "docx", "xlsx", "html"], required = false }
+]
+
+[commands.preflight]
+description = "Run quality checks"
+script = "commands/preflight.py"
+args = [
+  { name = "file", type = "path", required = true },
+  { name = "checks", type = "list", options = ["fonts", "images", "links", "colors", "accessibility", "all"], required = false }
+]
+
+[commands.config]
+description = "Manage configuration"
+script = "commands/config.py"
+args = [
+  { name = "action", type = "choice", options = ["get", "set", "reset", "show"], required = true },
+  { name = "key", type = "string", required = false },
+  { name = "value", type = "string", required = false }
+]
+
+[engines]
+pdf = ["playwright", "reportlab", "weasyprint", "fpdf2", "matplotlib"]
+pptx = ["python-pptx"]
+docx = ["python-docx", "docxtpl"]
+xlsx = ["xlsxwriter"]
+html = ["revealjs"]
+
+[templates]
+path = "./templates"
+builtin = ["whitepaper", "catalog", "portfolio", "infographic", "flyer", "reportlab_advanced", "weasyprint_premium", "matplotlib_datareport", "fpdf2_modern", "proposal_template", "business_modern", "creative_gradient", "technical_dark", "minimalist", "corporate_formal", "advanced_business", "proposal", "manual", "resume", "excel_dashboard", "revealjs_presentation"]
+
+[config]
+schema = "schema/config-schema.json"
+
+[config.defaults]
+language = "ja"
+color_scheme = "business"
+page_size = "A4"
+
+[config.defaults.font]
+primary = "Noto Sans JP"
+secondary = "Inter"
+monospace = "Consolas"
+
+[config.output]
+base_path = "./output"
+
+[config.output.subdirs]
+pdf = "pdf"
+pptx = "pptx"
+docx = "word"
+xlsx = "excel"
+html = "html"
+

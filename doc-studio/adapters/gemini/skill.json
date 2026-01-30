@@ -1,0 +1,137 @@
+{
+  "skill": {
+    "name": "doc-studio",
+    "display_name": "Doc Studio - Document Generator",
+    "version": "1.0.0",
+    "description": "Generate professional documents (PDF, PPTX, DOCX, Excel) with enterprise-quality templates",
+    "author": "Doc Studio Team",
+    "tags": ["documents", "pdf", "powerpoint", "word", "excel", "generation", "templates"],
+    "icon": "📄",
+    "min_api_version": "1.0"
+  },
+  "capabilities": {
+    "file_operations": true,
+    "shell_execution": true,
+    "python_execution": true
+  },
+  "tools": [
+    {
+      "name": "generate_document",
+      "description": "Generate a document using specified format and template",
+      "parameters": {
+        "format": {
+          "type": "string",
+          "enum": ["pdf", "pptx", "docx", "xlsx", "html"],
+          "description": "Document format"
+        },
+        "template": {
+          "type": "string",
+          "enum": [
+            "whitepaper",
+            "catalog",
+            "portfolio",
+            "infographic",
+            "flyer",
+            "reportlab_advanced",
+            "weasyprint_premium",
+            "matplotlib_datareport",
+            "fpdf2_modern",
+            "proposal_template",
+            "business_modern",
+            "creative_gradient",
+            "technical_dark",
+            "minimalist",
+            "corporate_formal",
+            "advanced_business",
+            "proposal",
+            "manual",
+            "resume",
+            "excel_dashboard",
+            "revealjs_presentation"
+          ],
+          "description": "Template style"
+        },
+        "output_path": {
+          "type": "string",
+          "description": "Output file path"
+        },
+        "data": {
+          "type": "object",
+          "description": "Template data variables"
+        },
+        "engine": {
+          "type": "string",
+          "enum": ["auto", "playwright", "reportlab", "weasyprint", "fpdf2", "python-pptx", "python-docx", "xlsxwriter"],
+          "description": "Generation engine"
+        }
+      },
+      "required": ["format", "template", "output_path"]
+    },
+    {
+      "name": "list_templates",
+      "description": "List available templates",
+      "parameters": {
+        "format": {
+          "type": "string",
+          "enum": ["pdf", "pptx", "docx", "xlsx", "html"],
+          "description": "Filter by format"
+        }
+      }
+    },
+    {
+      "name": "preflight_check",
+      "description": "Run quality checks on generated document",
+      "parameters": {
+        "file_path": {
+          "type": "string",
+          "description": "Path to document"
+        },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["fonts", "images", "links", "colors", "accessibility"]
+          }
+        }
+      },
+      "required": ["file_path"]
+    },
+    {
+      "name": "configure",
+      "description": "Configure skill settings",
+      "parameters": {
+        "key": {
+          "type": "string",
+          "description": "Configuration key"
+        },
+        "value": {
+          "type": "string",
+          "description": "Configuration value"
+        }
+      }
+    }
+  ],
+  "prompts": {
+    "generate": {
+      "description": "Generate a document",
+      "template": "Generate a {format} document using the {template} template. Save to {output_path}. Use the following data: {data}"
+    },
+    "create_presentation": {
+      "description": "Create a presentation",
+      "template": "Create a professional PowerPoint presentation about {topic} with {slides} slides using the {template} style"
+    },
+    "create_report": {
+      "description": "Create a business report",
+      "template": "Generate a {format} business report titled '{title}' with sections: {sections}"
+    }
+  },
+  "config": {
+    "schema": "schema/config-schema.json",
+    "defaults": {
+      "output_base": "./output",
+      "template_path": "./templates",
+      "default_language": "ja",
+      "default_color_scheme": "business"
+    }
+  }
+}

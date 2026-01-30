@@ -1,0 +1,251 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>{{ document_title }}</title>
+    <style>
+        body {
+            font-family: "Noto Sans JP", "Hiragino Sans", sans-serif;
+            font-size: 11pt;
+            line-height: 1.8;
+            color: #333;
+        }
+        .cover {
+            page-break-after: always;
+            text-align: center;
+            padding-top: 200px;
+        }
+        .cover-title {
+            font-size: 28pt;
+            font-weight: bold;
+            color: #1a365d;
+            margin-bottom: 20px;
+            border-bottom: 4px solid #c9a227;
+            padding-bottom: 20px;
+        }
+        .cover-subtitle {
+            font-size: 16pt;
+            color: #555;
+            margin-bottom: 100px;
+        }
+        .cover-meta {
+            font-size: 12pt;
+            color: #666;
+            line-height: 2;
+        }
+        h1 {
+            font-size: 18pt;
+            color: #1a365d;
+            border-left: 5px solid #c9a227;
+            padding-left: 15px;
+            margin-top: 30px;
+            page-break-after: avoid;
+        }
+        h2 {
+            font-size: 14pt;
+            color: #2c5282;
+            margin-top: 25px;
+            page-break-after: avoid;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 10pt;
+        }
+        th {
+            background-color: #1a365d;
+            color: white;
+            padding: 12px;
+            text-align: left;
+        }
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+        }
+        tr:nth-child(even) {
+            background-color: #f8f9fa;
+        }
+        .highlight-box {
+            background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%);
+            border: 2px solid #c9a227;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin: 20px 0;
+        }
+        .metric-card {
+            background: #1a365d;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .metric-value {
+            font-size: 24pt;
+            font-weight: bold;
+            color: #c9a227;
+        }
+        .signature {
+            margin-top: 50px;
+            text-align: right;
+        }
+        .signature-line {
+            border-top: 1px solid #333;
+            width: 300px;
+            display: inline-block;
+            margin-top: 50px;
+            padding-top: 5px;
+        }
+    </style>
+</head>
+<body>
+
+<!-- カバーページ -->
+<div class="cover">
+    <div class="cover-title">{{ document_title }}</div>
+    <div class="cover-subtitle">{{ document_subtitle }}</div>
+    <div class="cover-meta">
+        <p><strong>提案先:</strong> {{ client_name }}</p>
+        <p><strong>ご担当:</strong> {{ client_contact }}</p>
+        <p><strong>提案元:</strong> {{ company_name }}</p>
+        <p><strong>日付:</strong> {{ document_date }}</p>
+        <p><strong>バージョン:</strong> {{ document_version }}</p>
+    </div>
+</div>
+
+<!-- エグゼクティブサマリー -->
+<h1>1. エグゼクティブサマリー</h1>
+<p>{{ executive_summary }}</p>
+
+<div class="highlight-box">
+    <h2>プロジェクト概要</h2>
+    <p><strong>プロジェクト名:</strong> {{ project_name }}</p>
+    <p><strong>期間:</strong> {{ project_duration }}</p>
+    <p><strong>予算:</strong> {{ project_budget }}</p>
+</div>
+
+<!-- 期待効果 -->
+<h1>2. 期待効果</h1>
+<div class="metric-grid">
+    {% for benefit in benefits %}
+    <div class="metric-card">
+        <div class="metric-value">{{ benefit.value }}</div>
+        <div>{{ benefit.metric }}</div>
+        <div style="font-size: 9pt; opacity: 0.8;">{{ benefit.description }}</div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- チーム構成 -->
+<h1>3. プロジェクトチーム</h1>
+<table>
+    <tr>
+        <th>氏名</th>
+        <th>役割</th>
+        <th>経験年数</th>
+        <th>資格</th>
+    </tr>
+    {% for member in team_members %}
+    <tr>
+        <td>{{ member.name }}</td>
+        <td>{{ member.role }}</td>
+        <td>{{ member.experience }}</td>
+        <td>{{ member.cert }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+<!-- スケジュール -->
+<h1>4. プロジェクトスケジュール</h1>
+<table>
+    <tr>
+        <th>フェーズ</th>
+        <th>タスク</th>
+        <th>期間</th>
+        <th>成果物</th>
+    </tr>
+    {% for milestone in milestones %}
+    <tr>
+        <td>{{ milestone.phase }}</td>
+        <td>{{ milestone.task }}</td>
+        <td>{{ milestone.duration }}</td>
+        <td>{{ milestone.deliverable }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if show_detailed_cost %}
+<!-- 費用明細 -->
+<h1>5. 費用明細</h1>
+<table>
+    <tr>
+        <th>項目</th>
+        <th>金額</th>
+        <th>備考</th>
+    </tr>
+    {% set total = 0 %}
+    {% for item in cost_breakdown %}
+    {% set total = total + item.cost %}
+    <tr>
+        <td>{{ item.item }}</td>
+        <td style="text-align: right;">¥{{ "{:,}".format(item.cost) }}</td>
+        <td>{{ item.note }}</td>
+    </tr>
+    {% endfor %}
+    <tr style="background-color: #1a365d; color: white; font-weight: bold;">
+        <td>合計</td>
+        <td style="text-align: right;">¥{{ "{:,}".format(total) }}</td>
+        <td>(税別)</td>
+    </tr>
+</table>
+{% endif %}
+
+<!-- リスク管理 -->
+<h1>6. リスク管理</h1>
+<table>
+    <tr>
+        <th>リスク</th>
+        <th>影響度</th>
+        <th>確率</th>
+        <th>対策</th>
+    </tr>
+    {% for risk in risks %}
+    <tr>
+        <td>{{ risk.risk }}</td>
+        <td>{{ risk.impact }}</td>
+        <td>{{ risk.probability }}</td>
+        <td>{{ risk.mitigation }}</td>
+    </tr>
+    {% endfor %}
+</table>
+
+{% if include_case_study %}
+<!-- 導入事例 -->
+<h1>7. 導入事例</h1>
+{% for case in case_studies %}
+<div class="highlight-box">
+    <h2>{{ case.company }}（{{ case.industry }}）</h2>
+    <p>{{ case.result }}</p>
+</div>
+{% endfor %}
+{% endif %}
+
+<!-- 署名 -->
+<div class="signature">
+    <p>上記の通り、ご提案申し上げます。</p>
+    <div class="signature-line">
+        {{ company_name }}<br>
+        代表取締役<br><br>
+        {{ approval_date }}
+    </div>
+</div>
+
+</body>
+</html>

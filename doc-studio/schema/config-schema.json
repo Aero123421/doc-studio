@@ -1,0 +1,123 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Doc Studio Skill Configuration",
+  "description": "Configuration schema for document generation skill",
+  "type": "object",
+  "required": ["version", "output", "templates"],
+  "properties": {
+    "version": {
+      "type": "string",
+      "description": "Skill configuration version",
+      "default": "1.0.0"
+    },
+    "output": {
+      "type": "object",
+      "description": "Output directory configuration",
+      "properties": {
+        "basePath": {
+          "type": "string",
+          "description": "Base output directory",
+          "default": "./output"
+        },
+        "subdirs": {
+          "type": "object",
+          "properties": {
+            "pdf": { "type": "string", "default": "pdf" },
+            "pptx": { "type": "string", "default": "pptx" },
+            "docx": { "type": "string", "default": "word" },
+            "xlsx": { "type": "string", "default": "excel" },
+            "html": { "type": "string", "default": "html" }
+          }
+        }
+      }
+    },
+    "templates": {
+      "type": "object",
+      "description": "Template paths configuration",
+      "properties": {
+        "path": {
+          "type": "string",
+          "description": "Base template directory",
+          "default": "./templates"
+        },
+        "builtin": {
+          "type": "array",
+          "description": "Built-in template names",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "defaults": {
+      "type": "object",
+      "description": "Default values for document generation",
+      "properties": {
+        "language": {
+          "type": "string",
+          "enum": ["ja", "en", "zh", "ko"],
+          "default": "ja"
+        },
+        "colorScheme": {
+          "type": "string",
+          "enum": ["business", "creative", "dark", "minimal", "formal"],
+          "default": "business"
+        },
+        "font": {
+          "type": "object",
+          "properties": {
+            "primary": { "type": "string", "default": "Noto Sans JP" },
+            "secondary": { "type": "string", "default": "Inter" },
+            "monospace": { "type": "string", "default": "Consolas" }
+          }
+        },
+        "pageSize": {
+          "type": "string",
+          "enum": ["A4", "A3", "Letter", "A4-Landscape"],
+          "default": "A4"
+        }
+      }
+    },
+    "engines": {
+      "type": "object",
+      "description": "Generation engine preferences",
+      "properties": {
+        "pdf": {
+          "type": "string",
+          "enum": ["playwright", "reportlab", "weasyprint", "fpdf2", "matplotlib"],
+          "default": "playwright"
+        },
+        "pptx": {
+          "type": "string",
+          "enum": ["python-pptx"],
+          "default": "python-pptx"
+        },
+        "docx": {
+          "type": "string",
+          "enum": ["python-docx", "docxtpl"],
+          "default": "python-docx"
+        },
+        "xlsx": {
+          "type": "string",
+          "enum": ["xlsxwriter", "openpyxl"],
+          "default": "xlsxwriter"
+        }
+      }
+    },
+    "preflight": {
+      "type": "object",
+      "description": "Preflight check configuration",
+      "properties": {
+        "enabled": { "type": "boolean", "default": true },
+        "checks": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["fonts", "images", "links", "colors", "accessibility"]
+          },
+          "default": ["fonts", "images", "colors"]
+        }
+      }
+    }
+  }
+}

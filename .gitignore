@@ -1,0 +1,15 @@
+# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+
+# Virtual environments
+.venv/
+venv/
+
+# Doc Studio generated artifacts
+output/
+.doc-studio/
+dist/
+*.skill

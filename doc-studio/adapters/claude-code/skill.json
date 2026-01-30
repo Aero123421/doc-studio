@@ -1,0 +1,186 @@
+{
+  "name": "doc-studio",
+  "version": "1.0.0",
+  "description": "Generate high-quality documents (PDF, PPTX, DOCX, Excel) with professional templates",
+  "author": "Doc Studio Team",
+  "commands": [
+    {
+      "name": "generate",
+      "description": "Generate a document from template",
+      "parameters": {
+        "type": "object",
+        "required": ["format", "template", "output"],
+        "properties": {
+          "format": {
+            "type": "string",
+            "enum": ["pdf", "pptx", "docx", "xlsx", "html"],
+            "description": "Output document format"
+          },
+          "template": {
+            "type": "string",
+            "enum": [
+              "whitepaper",
+              "catalog",
+              "portfolio",
+              "infographic",
+              "flyer",
+              "reportlab_advanced",
+              "weasyprint_premium",
+              "matplotlib_datareport",
+              "fpdf2_modern",
+              "proposal_template",
+              "business_modern",
+              "creative_gradient",
+              "technical_dark",
+              "minimalist",
+              "corporate_formal",
+              "advanced_business",
+              "proposal",
+              "manual",
+              "resume",
+              "excel_dashboard",
+              "revealjs_presentation"
+            ],
+            "description": "Template style to use"
+          },
+          "output": {
+            "type": "string",
+            "description": "Output filename (without extension)"
+          },
+          "data": {
+            "type": "object",
+            "description": "Data to inject into template"
+          },
+          "engine": {
+            "type": "string",
+            "enum": ["auto", "playwright", "reportlab", "weasyprint", "fpdf2", "python-pptx", "python-docx", "xlsxwriter"],
+            "description": "Generation engine (auto-selected if not specified)"
+          }
+        }
+      },
+      "examples": [
+        "/generate pdf business quarterly_report --data '{\"title\":\"Q4 Report\"}'",
+        "/generate pptx technical architecture_presentation",
+        "/generate docx formal proposal --engine python-docx"
+      ]
+    },
+    {
+      "name": "template",
+      "description": "Manage document templates",
+      "parameters": {
+        "type": "object",
+        "required": ["action"],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["list", "info", "create", "edit"],
+            "description": "Template management action"
+          },
+          "name": {
+            "type": "string",
+            "description": "Template name (for info/create/edit)"
+          },
+          "format": {
+            "type": "string",
+            "enum": ["pdf", "pptx", "docx", "xlsx", "html"],
+            "description": "Filter by format (for list)"
+          }
+        }
+      },
+      "examples": [
+        "/template list",
+        "/template list --format pdf",
+        "/template info business"
+      ]
+    },
+    {
+      "name": "preflight",
+      "description": "Run preflight checks on generated documents",
+      "parameters": {
+        "type": "object",
+        "required": ["file"],
+        "properties": {
+          "file": {
+            "type": "string",
+            "description": "Path to document to check"
+          },
+          "checks": {
+            "type": "array",
+            "items": {
+              "type": "string",
+              "enum": ["fonts", "images", "links", "colors", "accessibility", "all"]
+            },
+            "description": "Specific checks to run"
+          }
+        }
+      },
+      "examples": [
+        "/preflight output/report.pdf",
+        "/preflight output/presentation.pptx --checks fonts,images"
+      ]
+    },
+    {
+      "name": "config",
+      "description": "Manage skill configuration",
+      "parameters": {
+        "type": "object",
+        "required": ["action"],
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": ["get", "set", "reset", "show"],
+            "description": "Configuration action"
+          },
+          "key": {
+            "type": "string",
+            "description": "Configuration key (for get/set)"
+          },
+          "value": {
+            "type": "string",
+            "description": "Configuration value (for set)"
+          }
+        }
+      },
+      "examples": [
+        "/config show",
+        "/config get defaults.language",
+        "/config set defaults.language en"
+      ]
+    }
+  ],
+  "templates": {
+    "path": "./templates",
+    "builtin": [
+      "whitepaper",
+      "catalog",
+      "portfolio",
+      "infographic",
+      "flyer",
+      "reportlab_advanced",
+      "weasyprint_premium",
+      "matplotlib_datareport",
+      "fpdf2_modern",
+      "proposal_template",
+      "business_modern",
+      "creative_gradient",
+      "technical_dark",
+      "minimalist",
+      "corporate_formal",
+      "advanced_business",
+      "proposal",
+      "manual",
+      "resume",
+      "excel_dashboard",
+      "revealjs_presentation"
+    ]
+  },
+  "engines": {
+    "supported": {
+      "pdf": ["playwright", "reportlab", "weasyprint", "fpdf2", "matplotlib"],
+      "pptx": ["python-pptx"],
+      "docx": ["python-docx", "docxtpl"],
+      "xlsx": ["xlsxwriter"],
+      "html": ["revealjs"]
+    }
+  }
+}
