@@ -26,30 +26,7 @@
         },
         "template": {
           "type": "string",
-          "enum": [
-            "whitepaper",
-            "catalog",
-            "portfolio",
-            "infographic",
-            "flyer",
-            "reportlab_advanced",
-            "weasyprint_premium",
-            "matplotlib_datareport",
-            "fpdf2_modern",
-            "proposal_template",
-            "business_modern",
-            "creative_gradient",
-            "technical_dark",
-            "minimalist",
-            "corporate_formal",
-            "advanced_business",
-            "proposal",
-            "manual",
-            "resume",
-            "excel_dashboard",
-            "revealjs_presentation"
-          ],
-          "description": "Template style"
+          "description": "Template name (e.g. whitepaper) OR template file path (e.g. templates/custom_acme_whitepaper.py)"
         },
         "output_path": {
           "type": "string",
@@ -114,7 +91,7 @@
   "prompts": {
     "generate": {
       "description": "Generate a document",
-      "template": "Generate a {format} document using the {template} template. Save to {output_path}. Use the following data: {data}"
+      "template": "Generate a {format} document using template {template} (name or file path). Save to {output_path}. Use the following data: {data}"
     },
     "create_presentation": {
       "description": "Create a presentation",

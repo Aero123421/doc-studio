@@ -12,7 +12,7 @@ description = "Generate a document"
 script = "commands/generate.py"
 args = [
   { name = "format", type = "choice", options = ["pdf", "pptx", "docx", "xlsx", "html"], required = true },
-  { name = "template", type = "choice", options = ["whitepaper", "catalog", "portfolio", "infographic", "flyer", "reportlab_advanced", "weasyprint_premium", "matplotlib_datareport", "fpdf2_modern", "proposal_template", "business_modern", "creative_gradient", "technical_dark", "minimalist", "corporate_formal", "advanced_business", "proposal", "manual", "resume", "excel_dashboard", "revealjs_presentation"], required = true },
+  { name = "template", type = "string", required = true },
   { name = "output", type = "string", required = true },
   { name = "data", type = "json", required = false },
   { name = "engine", type = "choice", options = ["auto", "playwright", "reportlab", "weasyprint", "fpdf2", "python-pptx", "python-docx", "xlsxwriter"], required = false }
@@ -22,7 +22,7 @@ args = [
 description = "Manage templates"
 script = "commands/template.py"
 args = [
-  { name = "action", type = "choice", options = ["list", "info", "create", "edit"], required = true },
+  { name = "action", type = "choice", options = ["list", "info", "clone", "create", "edit", "export", "import"], required = true },
   { name = "name", type = "string", required = false },
   { name = "format", type = "choice", options = ["pdf", "pptx", "docx", "xlsx", "html"], required = false }
 ]

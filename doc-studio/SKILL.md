@@ -1,28 +1,67 @@
 ---
 name: doc-studio
-description: PDF/PPTX/DOCX/XLSX/HTML の資料を「要件ヒアリング→構成合意→内容に合わせたカスタム生成→preflight/目視チェック」まで再現可能に行うスキル。提案書/報告書/ホワイトペーパー/スライド/ダッシュボード作成に使う。
+description: PDF/PPTX/DOCX/XLSX/HTML の資料を「プロジェクト把握→ヒアリング→構成合意→案件用テンプレ作成→生成→preflight/目視チェック」まで再現可能に行うスキル。提案書/報告書/ホワイトペーパー/スライド/ダッシュボード作成に使う。
 metadata:
   short-description: Generate pro docs
 ---
 
 # Doc Studio
 
-このSkillの目的は「テンプレを埋める」ことではなく、**案件ごとに中身を作り、再現可能な手順で資料を仕上げる**ことです。
+このSkillの目的は「テンプレを埋める」ことではなく、**案件・プロジェクトの中身に合わせて資料を設計し、再現可能に仕上げる**ことです。
 
 ※ コマンド例は `doc-studio/` を作業ディレクトリにして実行する前提です（リポジトリ直下から実行する場合は `doc-studio/` を前置）。
 
-## 最優先ルール（テンプレ過依存を防ぐ）
+## 想定ユースケース（広め）
 
-1. **生成前に必ずヒアリングする**（最低限の質問が揃うまでテンプレ選定・生成に突入しない）
-2. **テンプレは表現/レイアウトの参考**。内容（見出し・章立て・主張・根拠・数値・用語）は案件に合わせて作る
+### 1) プロジェクト理解 → 資料化
+
+- リポジトリを読んで、**プロジェクト概要**（目的/機能/構成/依存/運用）をまとめる
+- 既存ドキュメントや設計情報を拾って、**アーキテクチャ説明資料**（PDF/PPTX）を作る
+- `docs/` や `README` を元に、**社内向けオンボーディング資料**（DOCX/PDF）を作る
+
+### 2) 依頼内容に合わせた資料作成
+
+- 提案書/企画書（DOCX/PDF）
+- 報告書/ホワイトペーパー（PDF）
+- スライド（PPTX / Reveal.js HTML）
+- 指標ダッシュボード（XLSX）
+
+### 3) 既存成果物の更新
+
+- 既存資料（DOCX/PPTX/PDF）の章立て・数値・表現を更新し、体裁を保って再生成する
+- 章の差し替え/追加/削除、トーン変更、社外向け表現への変換
+
+## 最優先ルール（テンプレ依存を断つ）
+
+1. **生成前ゲート**: まず「プロジェクト把握」→「ヒアリング」→「構成合意」。ここを飛ばしてテンプレ選定/生成に入らない
+2. **テンプレは表現・レイアウトの参考**。章立て・主張・根拠・数値・用語は案件に合わせて設計する
 3. **テンプレ文言のコピペ禁止**（プレースホルダ/汎用文章を納品物に残さない）
-4. まず **構成案（目次 + 各章の要点）** を提示し、合意を取ってから生成する
-5. 情報が不足している場合は **質問するか、仮定を明示して確認**する（黙って決めない）
-6. 最終成果物は **preflight + 目視チェック**（崩れ/フォント/リンク/画像/表）を通す
+4. 既存テンプレ（短い名前）をそのまま使うのは **ラフ用途のみ**（「ラフ」と明示し、納品前に必ず差し替える）
+5. 原則として **案件用カスタムテンプレを作る**（コピーして編集する）
 
-## ヒアリング（最初に聞く5問）
+## Step 0: プロジェクト把握（必須）
 
-最初の返答で、まずこれだけ聞く（足りなければ次のターンで追加）。
+まず「どんなプロジェクトか」「既存資産は何か」を短時間で掴む。
+
+推奨コマンド:
+
+```bash
+python scripts/project_inspect.py --path . --depth 3
+```
+
+ここで見るもの（最低限）:
+
+- 既存ドキュメント: `docs/`、`README*`、`*.md`、`*.docx`、`*.pptx`、`*.pdf`
+- ブランド/デザイン資産: `brand/`、`design/`、`assets/`、`logo*`、色/フォント指定
+- 仕様・制約: 用語集、禁止表現、コンプラ/法務注意
+
+このStepの成果物（テキストでOK）:
+
+- **Project Snapshot**（5〜15行）: 目的/対象ユーザー/主要機能/制約/利用技術/既存資産/トーン
+
+## Step 1: ヒアリング（最初に聞く5問）
+
+生成に入る前に、最低限これを確認する（ユーザーが「任せる」と言っても(1)(2)(3)は必須）。
 
 1) **用途/読者/意思決定**
 - 誰が読む？（役員/営業/技術/顧客/採用など）
@@ -44,73 +83,67 @@ metadata:
 - トーン（硬め/カジュアル/社外向け）・NG表現・法務/コンプラ注意点
 - 締切とレビュー回数
 
-ユーザーが「任せる」と言った場合:
-- 上の5問のうち **(1)(2)(3)** だけは必ず確認する
-- 残りは「仮定」を明示し、後で差し替え可能にする（仮定一覧を冒頭に出す）
+## Step 2: 構成合意（生成しない）
 
-## 進め方（2パス推奨）
+必ず先に **構成案** を出して合意を取る。
 
-### パス1: 設計（生成しない）
+出すもの:
 
-1. ヒアリング回答を整理（不足があれば質問）
-2. **構成案（目次 + 各章の狙い + 章ごとの箇条書き）** を提示
-3. 入力データ（JSON）の案を作る（ユーザーが埋められる形にする）
-4. 合意を取る（ここで初めて生成へ進む）
+- 目次（章立て）
+- 各章の狙い（1行）+ 箇条書き（3〜8点）
+- 「不足している情報」と「仮定一覧（明示）」  
 
-### パス2: 実装（生成→検査→修正）
+ここで合意が取れたら、初めて生成へ進む。
 
-1. テンプレは「近い表現」を参考にするだけ
-2. 案件用に **カスタムテンプレを作って編集**する（推奨: `templates/custom_<案件名>.py`）
-3. `scripts/generate.py` で生成
-4. preflight + 目視確認
-5. 指摘を反映して再生成
-
-## テンプレの扱い方（強制的にカスタムへ寄せる）
+## Step 3: 案件用カスタムテンプレを作る（推奨）
 
 ### 原則
 
-- `templates/` の役割は **見た目の方向性・レイアウトの参考**。
-- 原則として、既存テンプレをそのまま使わず、**コピーして案件用に編集**する。
+- `templates/` の既存テンプレは叩き台。**そのまま使わずコピーして編集**する。
+- 生成コマンドでは、短いテンプレ名よりも **テンプレファイルパス** を優先して使う。
 
-例（白紙からではなく「近い見た目」から始める）:
+テンプレをコピー（clone）:
 
 ```bash
-copy templates/pdf_whitepaper.py templates/custom_acme_whitepaper.py
+python scripts/template.py clone --from whitepaper --to custom_acme_whitepaper.py
+```
+
+生成（パス指定）:
+
+```bash
 python scripts/generate.py pdf templates/custom_acme_whitepaper.py acme_whitepaper --data-file data.json
 ```
 
-### 例外（そのまま使って良いケース）
+テンプレの必須インターフェース:
 
-- ユーザーが「まずは雛形だけほしい」と明示している
-- 1回目のラフとして「構成確認のため」だけに使う（納品前に必ず文章を差し替える）
+- `--output <path>` と `--data-file <path>` を受け取り、指定の出力ファイルを作成する
+- 失敗時は終了コード != 0 で落ち、原因が分かるメッセージを stderr に出す
 
-## クイックスタート（確認用）
+## Step 4: 生成 → preflight → 目視チェック
 
-テンプレ一覧:
-
-```bash
-python scripts/template.py list
-```
-
-生成（例）:
+生成:
 
 ```bash
-python scripts/generate.py pdf whitepaper my_whitepaper --data-file data.json
-python scripts/generate.py pptx business_modern my_slides --data-file data.json
-python scripts/generate.py docx proposal my_proposal --data-file data.json
-python scripts/generate.py xlsx excel_dashboard my_dashboard --data-file data.json
-python scripts/generate.py html revealjs_presentation my_deck --data-file data.json
+python scripts/generate.py <format> <template-or-path> <output> --data-file data.json
 ```
 
 preflight:
 
 ```bash
-python scripts/preflight.py output/pdf/my_whitepaper.pdf
+python scripts/preflight.py <file>
 ```
 
-## 生成コマンド（このSkillが提供するCLI）
+目視チェックで見るもの:
 
-- テンプレ管理: `python scripts/template.py list|info ...`
+- 崩れ/余白/改ページ/表の折返し
+- フォント（文字化け/埋め込み/太字）
+- 画像（荒れ/比率/余白）
+- リンク（PDF/HTML）
+
+## コマンド（このSkillが提供するCLI）
+
+- プロジェクト把握: `python scripts/project_inspect.py --path .`
+- テンプレ管理: `python scripts/template.py list|info|clone ...`
 - 生成: `python scripts/generate.py <format> <template> <output> [--data|--data-file] [--engine auto|...]`
 - preflight: `python scripts/preflight.py <file> [--checks ...] [--json]`
 - 設定: `python scripts/config.py show|get|set|init|validate ...`

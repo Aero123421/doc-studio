@@ -21,33 +21,9 @@ commands:
         description: Output document format
 
       - name: template
-        type: choice
-        options:
-          [
-            whitepaper,
-            catalog,
-            portfolio,
-            infographic,
-            flyer,
-            reportlab_advanced,
-            weasyprint_premium,
-            matplotlib_datareport,
-            fpdf2_modern,
-            proposal_template,
-            business_modern,
-            creative_gradient,
-            technical_dark,
-            minimalist,
-            corporate_formal,
-            advanced_business,
-            proposal,
-            manual,
-            resume,
-            excel_dashboard,
-            revealjs_presentation,
-          ]
+        type: string
         required: true
-        description: Template style
+        description: Template name (e.g. whitepaper) OR template file path (e.g. templates/custom_acme_whitepaper.py)
 
       - name: output
         type: string
@@ -67,6 +43,7 @@ commands:
 
     examples:
       - "doc-studio generate pdf whitepaper quarterly_report"
+      - "doc-studio generate pdf templates/custom_acme_whitepaper.py acme_whitepaper"
       - "doc-studio generate pptx business_modern strategy_slides"
       - "doc-studio generate docx proposal project_proposal"
 
@@ -77,7 +54,7 @@ commands:
     args:
       - name: action
         type: choice
-        options: [list, info, create, edit]
+        options: [list, info, clone, create, edit, export, import]
         required: true
         description: Action to perform
 

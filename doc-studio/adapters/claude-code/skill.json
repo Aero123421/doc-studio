@@ -18,30 +18,7 @@
           },
           "template": {
             "type": "string",
-            "enum": [
-              "whitepaper",
-              "catalog",
-              "portfolio",
-              "infographic",
-              "flyer",
-              "reportlab_advanced",
-              "weasyprint_premium",
-              "matplotlib_datareport",
-              "fpdf2_modern",
-              "proposal_template",
-              "business_modern",
-              "creative_gradient",
-              "technical_dark",
-              "minimalist",
-              "corporate_formal",
-              "advanced_business",
-              "proposal",
-              "manual",
-              "resume",
-              "excel_dashboard",
-              "revealjs_presentation"
-            ],
-            "description": "Template style to use"
+            "description": "Template name (e.g. whitepaper) OR template file path (e.g. templates/custom_acme_whitepaper.py)"
           },
           "output": {
             "type": "string",
@@ -59,9 +36,9 @@
         }
       },
       "examples": [
-        "/generate pdf business quarterly_report --data '{\"title\":\"Q4 Report\"}'",
-        "/generate pptx technical architecture_presentation",
-        "/generate docx formal proposal --engine python-docx"
+        "/generate pdf whitepaper quarterly_report --data '{\"title\":\"Q4 Report\"}'",
+        "/generate pdf templates/custom_acme_whitepaper.py acme_whitepaper --data-file data.json",
+        "/generate pptx business_modern strategy_slides"
       ]
     },
     {
@@ -73,7 +50,7 @@
         "properties": {
           "action": {
             "type": "string",
-            "enum": ["list", "info", "create", "edit"],
+            "enum": ["list", "info", "clone", "create", "edit", "export", "import"],
             "description": "Template management action"
           },
           "name": {
